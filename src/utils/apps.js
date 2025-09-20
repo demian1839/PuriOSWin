@@ -47,11 +47,11 @@ const apps = [
     action: "MSEDGE",
   },
   {
-    name: "Buy me a coffee",
+    name: "HeyPuri Login Portal",
     icon: "buyme",
     type: "app",
     action: "EXTERNAL",
-    payload: "https://www.buymeacoffee.com/blueedgetechno",
+    payload: "https://loginpurios.vercel.app",
   },
   {
     name: "Store",
@@ -294,12 +294,7 @@ const apps = [
     action: "EXTERNAL",
     payload: "https://blueedge.me/unescape",
   },
-  {
-    name: "Discord",
-    icon: "discord",
-    type: "app",
-    action: "DISCORD",
-  },
+ 
 ];
 
 for (let i = 0; i < installed.length; i++) {
