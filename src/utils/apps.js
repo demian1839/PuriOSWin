@@ -47,7 +47,7 @@ const apps = [
     action: "MSEDGE",
   },
   {
-    name: "HeyPuri Login Portal",
+    name: "buy me a coffee",
     icon: "buyme",
     type: "app",
     action: "EXTERNAL",
