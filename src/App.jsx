@@ -32,11 +32,10 @@ function ErrorFallback({ error, resetErrorBoundary }) {
         <div id="container">
           <h1>:(</h1>
           <h2>
-            Your PC ran into a problem and needs to restart. We're just
-            collecting some error info, and then we'll restart for you.
+            Na toll Jetzt ist die Flimmerkiste Abgestürzt Jetzt muss ich das Alte ding reparieren
           </h2>
           <h2>
-            <span id="percentage">0</span>% complete
+            <span id="percentage">0</span>% Erfolglos
           </h2>
           <div id="details">
             <div id="qr">
@@ -46,18 +45,18 @@ function ErrorFallback({ error, resetErrorBoundary }) {
             </div>
             <div id="stopcode">
               <h4>
-                For more information about this issue and possible fixes, visit
+                Nein alles gut Hier ist einfach nichts lol
                 <br />{" "}
-                <a href="https://github.com/blueedgetechno/win11React/issues">
-                  https://github.com/blueedgetechno/win11React/issues
+                <a href="https://purioswin.vercel.app">
+                Druck auf den link 
                 </a>{" "}
               </h4>
               <h5>
-                If you call a support person, give them this info:
+               Wenn du mir ein fix geben willst sage mir einfach diesen code kuss
                 <br />
                 Stop Code: {error.message}
               </h5>
-              <button onClick={resetErrorBoundary}>Try again</button>
+              <button onClick={resetErrorBoundary}>Auf ein neues</button>
             </div>
           </div>
         </div>
