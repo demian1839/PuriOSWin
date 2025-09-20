@@ -181,8 +181,8 @@ export const App = () => {
       <style>{mainAppStyles}</style>
       <main className="main-app">
         <h1>Willkommen zurück!</h1>
-        <p>Das Betriebssystem ist erfolgreich gestartet.</p>
-        <p>Hier kommt der eigentliche Inhalt deiner Seite.</p>
+        <p>Wenn du das hier siehst ist was mächtig schiefgelaufen </p>
+        <p>Flimmerkiste halt Drück STRG + R</p>
       </main>
     </>
   );
