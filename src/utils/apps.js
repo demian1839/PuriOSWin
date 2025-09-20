@@ -294,6 +294,12 @@ const apps = [
     action: "EXTERNAL",
     payload: "https://blueedge.me/unescape",
   },
+  {
+    name: "Discord",
+    icon: "discord",
+    type: "app",
+    action: "DISCORD",
+  },
  
 ];
 
