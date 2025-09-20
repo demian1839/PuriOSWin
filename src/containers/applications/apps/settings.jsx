@@ -128,7 +128,7 @@ export const Settings = () => {
                                   className="device_img"
                                 />
                                 <div className="column_device">
-                                  <p className="device_name">Liber-V</p>
+                                  <p className="device_name">PuriOS Design</p>
                                   <p className="device_model">NS14A8</p>
                                   <p className="device_rename">Rename</p>
                                 </div>
