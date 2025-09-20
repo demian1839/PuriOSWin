@@ -140,29 +140,26 @@ export const Getstarted = () => {
                 </div>
                 <div className="right">
                   <div className="header">
-                    Let's connect you to a network
+                    Lass deiner Flimmerkiste mal Das Netzwerk Erklären 
                     <div className="header_sml">
-                      You'll need an internet connection to continue the setting
-                      up your device.Once connected, you'll get the latest
-                      features and security updates.
+                     Deine Flimmerkiste braucht internet damit du updates bekommst nur mal so nen tipp
                     </div>
                     <div className="ethernet_list">
                       <div className="list_oobe_opt_wifi">
                         <i id="connection" className="bx bx-desktop"></i>{" "}
                         <div className="ethernet_list_opt_inr">
-                          <div className="text_sml_black_wifi">Ethernet 01</div>
-                          <div className="header_sml_wifi">Not connected</div>
+                          <div className="text_sml_black_wifi">Lan 1</div>
+                          <div className="header_sml_wifi">Nicht Verbunden. Flimmerkiste</div>
                         </div>
                       </div>
                       <div className="list_oobe_opt"></div>
                       <div className="list_oobe_opt"></div>
                     </div>
                     <div className="text_sml_black">
-                      Having trouble to getting connected?
+                     Hat die Flimmerkiste Probleme mit dem Internet?
                     </div>
                     <div className="header_sml">
-                      For troubleshooting tips use another device and visit
-                      aka.ms/networksetup
+                     Damit deiner flimmerkiste geholfen werden kann schreib mir auf Teams demgoe10@puricelli-schule.de
                     </div>
                   </div>
                 </div>
@@ -174,14 +171,14 @@ export const Getstarted = () => {
                   <img id="left_img" src="img/oobe/window11_oobe_update.png" />
                 </div>
                 <div className="right">
-                  <div className="header mb-8">The setup has completed.</div>
-                  <div>You can close this now.</div>
+                  <div className="header mb-8">Du und deine Flimmerkiste ihr habt es geschafft tatsächlich Geschafft Ich bin stolz auf dich .</div>
+                  <div>Du kannst das hier schliessen.</div>
                 </div>
               </>
             ) : null}
 
             <div className="yes_button base" onClick={nextPage}>
-              Yes
+              Jo
             </div>
           </div>
 
