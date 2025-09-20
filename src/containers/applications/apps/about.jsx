@@ -1,76 +1,177 @@
 import React, { useState, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { useTranslation } from "react-i18next";
 
-export const AboutWin = () => {
-  const { abOpen } = useSelector((state) => state.desktop);
-  const { locked, booted } = useSelector((state) => state.wallpaper);
-  const [open, setOpen] = useState(
-    true && import.meta.env.MODE != "development",
-  );
-  const [timer, setTimer] = useState(
-    localStorage.getItem("closeAbout") == "true" ? 0 : 5,
-  );
-  const dispatch = useDispatch();
-  const { t, i18n } = useTranslation();
+// Die komplette Komponente inklusive der Stile in einer Datei.
+export const BootScreen = () => {
+  // Dieser State steuert, ob die Komponente überhaupt angezeigt wird
+  const [isVisible, setIsVisible] = useState(true);
 
-  const action = () => {
-    setOpen(false);
-    localStorage.setItem("closeAbout", true);
-    dispatch({ type: "DESKABOUT", payload: false });
-  };
+  // Dieser State verfolgt den Fortschritt der Animation
+  // 'logo' -> 'loading' -> 'credits' -> 'done'
+  const [animationStep, setAnimationStep] = useState("logo");
 
   useEffect(() => {
-    if (timer > 0 && !locked && booted) {
-      setTimeout(() => {
-        setTimer(timer - 1);
-      }, 1000);
+    // Startet eine Kette von Timern, um die Animationen zu steuern
+
+    // Nach 2.5 Sekunden: Wechsle vom Logo zum Ladebalken
+    const loadingTimer = setTimeout(() => {
+      setAnimationStep("loading");
+    }, 2500);
+
+    // Nach 5.5 Sekunden: Zeige den Abspann (Credits)
+    // (2.5s für Logo + 3s für den Ladebalken)
+    const creditsTimer = setTimeout(() => {
+      setAnimationStep("credits");
+    }, 5500);
+
+    // Nach 9 Sekunden: Blende die gesamte Komponente aus
+    const endTimer = setTimeout(() => {
+      setAnimationStep("done"); // Löst die Ausblend-Animation aus
+      setTimeout(() => setIsVisible(false), 1000); // Entfernt die Komponente nach dem Ausblenden
+    }, 9000);
+
+    // Wichtig: Timer aufräumen, wenn die Komponente verlassen wird
+    return () => {
+      clearTimeout(loadingTimer);
+      clearTimeout(creditsTimer);
+      clearTimeout(endTimer);
+    };
+  }, []); // Der leere Array [] sorgt dafür, dass dieser Effekt nur einmal beim Start läuft
+
+  // Wenn isVisible false ist, wird nichts gerendert
+  if (!isVisible) {
+    return null;
+  }
+
+  // Das CSS wird direkt hier mit einem <style>-Tag eingebettet.
+  const styles = `
+    .boot-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: #0d0d0d;
+      color: #e0e0e0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      z-index: 9999;
+      opacity: 1;
+      transition: opacity 1s ease-out;
     }
-  }, [timer, locked, booted]);
 
-  return open || abOpen ? (
-    <div className="aboutApp floatTab dpShad">
-      <div className="content p-6">
-        <div className="text-xl font-semibold">{t("about.title")}</div>
-        <p>{t("about.opensource")}</p>
-        <p>
-          {t("about.licensed")}&nbsp;
-          <a
-            target="_blank"
-            href="https://github.com/blueedgetechno/win11React/blob/master/LICENSE"
-            rel="noreferrer"
-          >
-            {t("about.Creative-Commons")}
-          </a>
-          .
-        </p>
-        <p className="pl-4">
-          {t("about.contact")} :&nbsp;
-          <a target="_blank" href="mailto:blue@win11react.com" rel="noreferrer">
-            blue@win11react.com
-          </a>
-        </p>
+    .boot-container.fade-out {
+      opacity: 0;
+    }
 
-        <p>{t("about.notmicrosoft")}</p>
-        <p>
-          {t("about.alsonot")}&nbsp;
-          <a
-            target="_blank"
-            href="https://www.microsoft.com/en-in/windows-365"
-            rel="noreferrer"
-          >
-            Windows 365 cloud PC
-          </a>
-          .
-        </p>
-        <p>{t("about.microsoftcopywrite")}.</p>
-      </div>
-      <div className="okbtn px-6 py-4">
-        <div data-allow={timer == 0} onClick={timer == 0 && action}>
-          {t("about.understand")}{" "}
-          {timer > 0 ? <span>{`( ${timer} )`}</span> : null}
+    .boot-content {
+      text-align: center;
+      position: relative;
+      width: 400px;
+      height: 200px;
+    }
+
+    .logo-loading-section,
+    .credits-section {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+    }
+
+    .logo-loading-section.show,
+    .credits-section.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .logo-text {
+      font-size: 4rem;
+      font-weight: 300;
+      letter-spacing: 2px;
+      margin: 0;
+      animation: flicker-in 2.5s forwards;
+    }
+
+    .loading-bar-container {
+      width: 80%;
+      height: 5px;
+      background-color: #333;
+      border-radius: 5px;
+      margin-top: 2rem;
+      overflow: hidden;
+    }
+
+    .loading-bar-progress {
+      width: 100%;
+      height: 100%;
+      background-color: #fff;
+      border-radius: 5px;
+      transform: translateX(-100%);
+    }
+
+    .loading-bar-progress.start-loading {
+      animation: fill-bar 3s ease-in-out forwards;
+    }
+
+    .credits-section p {
+      margin: 0.3rem 0;
+      font-size: 1.1rem;
+    }
+
+    @keyframes flicker-in {
+      0% {
+        opacity: 0;
+        text-shadow: none;
+      }
+      50% {
+        opacity: 0.5;
+        text-shadow: 0 0 10px #fff;
+      }
+      100% {
+        opacity: 1;
+        text-shadow: none;
+      }
+    }
+
+    @keyframes fill-bar {
+      from {
+        transform: translateX(-100%);
+      }
+      to {
+        transform: translateX(0%);
+      }
+    }
+  `;
+
+  return (
+    <>
+      <style>{styles}</style>
+      <div className={`boot-container ${animationStep === "done" ? "fade-out" : ""}`}>
+        <div className="boot-content">
+          <div className={`logo-loading-section ${animationStep !== 'logo' ? 'show' : ''}`}>
+            <h1 className="logo-text">PuriOS</h1>
+            <div className="loading-bar-container">
+              <div
+                className={`loading-bar-progress ${animationStep !== 'logo' ? 'start-loading' : ''}`}
+              ></div>
+            </div>
+          </div>
+          <div className={`credits-section ${animationStep === 'credits' ? 'show' : ''}`}>
+            <p>Gemacht mit ❤️.</p>
+            <p>Von Demian Götze, Elias Hoffmann, Andy Rick</p>
+          </div>
         </div>
       </div>
-    </div>
-  ) : null;
+    </>
+  );
 };
