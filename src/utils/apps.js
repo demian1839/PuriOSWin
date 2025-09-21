@@ -206,7 +206,7 @@ const apps = [
     type: "app",
   },
   {
-    name: "Login",
+    name: "Spotify",
     icon: "spotify",
     type: "app",
     action: "SPOTIFY",
