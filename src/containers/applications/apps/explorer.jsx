@@ -151,7 +151,7 @@ export const ExplorerOneDrive = () => {
                 </div>
               ))}
               {files.length === 0 && (
-                <span className="text-xs mx-auto">Dieser Ordner ist leer.</span>
+                <span className="text-xs mx-auto">Dieser Ordner ist leer .</span>
               )}
             </div>
           </div>
