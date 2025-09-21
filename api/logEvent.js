@@ -1,31 +1,30 @@
-import { put, list } from "@vercel/blob";
+import { put } from "@vercel/blob";
 
 export default async function handler(req, res) {
-  if (req.method === "POST") {
-    const event = req.body;
-    const blob = await put(
-      `events/${Date.now()}-${event.user}.json`,
-      JSON.stringify(event),
-      {
-        access: "public",
-        contentType: "application/json",
-      }
-    );
-    return res.status(200).json({ ok: true, url: blob.url });
-  }
+  try {
+    // Body auslesen (kommt von login.jsx)
+    const { username, action } = JSON.parse(req.body);
 
-  if (req.method === "GET") {
-    const { blobs } = await list({ prefix: "events/" });
-    const events = await Promise.all(
-      blobs.map(async (b) => {
-        const r = await fetch(b.url);
-        return r.json();
-      })
-    );
-    return res
-      .status(200)
-      .json(events.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)));
-  }
+    // Zeitstempel erzeugen
+    const timestamp = new Date().toLocaleString("de-DE", {
+      timeZone: "Europe/Berlin",
+    });
 
-  res.status(405).end(); // Methode nicht erlaubt
+    // Log-Zeile vorbereiten
+    const logLine = `${timestamp} - ${username} hat sich ${action}\n`;
+
+    // Datei in Vercel Blob schreiben (append = true → anhängen)
+    await put("logs/login-events.txt", logLine, {
+      access: "public",
+      addRandomSuffix: false,
+      token: process.env.BLOB_READ_WRITE_TOKEN,
+      // Wichtig: "append" erlaubt, dass mehrere Events in der Datei stehen
+      append: true,
+    });
+
+    res.status(200).json({ success: true });
+  } catch (err) {
+    console.error("LogEvent Error:", err);
+    res.status(500).json({ error: err.message });
+  }
 }
