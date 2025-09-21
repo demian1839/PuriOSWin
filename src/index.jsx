@@ -10,7 +10,7 @@ root.render(
   <Suspense
     fallback={
       <div id="sus-fallback">
-        <h1>Die Flimmerkiste Fährt hoch warte nh sekunde</h1>
+        <h1>PuriOS by Demian</h1>
       </div>
     }
   >
