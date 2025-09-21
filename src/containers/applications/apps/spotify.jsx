@@ -1,20 +1,21 @@
-import React from "react";
+import React from 'react';
 
-export default function App() {
+// Diese Komponente wurde vereinfacht, um nur den iframe anzuzeigen.
+// Der gesamte vorherige Code für den Musikplayer wurde entfernt.
+export const Spotify = () => {
   return (
-    <div className="h-screen flex flex-col bg-gray-900 text-white">
-      <header className="bg-gray-800 px-6 py-4 flex justify-between items-center shadow-md">
-        <h1 className="text-xl font-bold">🌐 HeyPuri Portal</h1>
-        <span className="text-sm opacity-70">vercel.app</span>
-      </header>
-
-      <div className="flex-1">
-        <iframe
-          src="https://puriloginwin.netlify.app"
-          title="HeyPuri Login"
-          className="w-full h-full border-none"
-        ></iframe>
-      </div>
+    // Ein Container-Div, das sicherstellt, dass der iframe den gesamten verfügbaren Platz einnimmt.
+    <div style={{ width: '100%', height: '100vh', overflow: 'hidden' }}>
+      <iframe
+        src="https://puriloginwin.netlify.app"
+        title="PuriLoginWin App"
+        style={{
+          width: '100%',
+          height: '100%',
+          border: 'none', // Entfernt den Standard-Rand des iframes
+        }}
+        allowFullScreen // Erlaubt den Vollbildmodus für den iframe-Inhalt
+      ></iframe>
     </div>
   );
-}
+};
