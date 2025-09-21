@@ -1,37 +1,29 @@
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { ToolBar } from "../../../utils/general";
-import { put, list } from "@vercel/blob";
 
 const users = [
   { username: "demgoe10", password: "Demian2010", displayName: "Demian-Jean Götze", role: "student" },
-  { username: "lehrer2025", password: "1313", displayName: "Lehrer Dashboard", role: "teacher" }
+  { username: "lehrer2025", password: "1313", displayName: "Lehrer Dashboard", role: "teacher" },
 ];
 
-// --- Logging in Blob DB ---
+// --- API Calls ---
 async function logEvent(user, status) {
-  const event = {
-    user: user.username,
-    role: user.role,
-    status, // "login" oder "logout"
-    timestamp: new Date().toISOString(),
-  };
-  await put(`events/${Date.now()}-${user.username}.json`, JSON.stringify(event), {
-    access: "public",
-    contentType: "application/json",
+  await fetch("/api/logEvent", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      user: user.username,
+      role: user.role,
+      status,
+      timestamp: new Date().toISOString(),
+    }),
   });
 }
 
-// --- Dashboard ---
 async function fetchEvents() {
-  const { blobs } = await list({ prefix: "events/" });
-  const events = await Promise.all(
-    blobs.map(async (b) => {
-      const res = await fetch(b.url);
-      return res.json();
-    })
-  );
-  return events.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+  const res = await fetch("/api/logEvent");
+  return await res.json();
 }
 
 export const Spotify = () => {
