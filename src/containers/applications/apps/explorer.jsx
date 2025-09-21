@@ -1,15 +1,15 @@
-import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 import { PublicClientApplication } from "@azure/msal-browser";
 import { ToolBar, Icon } from "../../../utils/general";
 import "./assets/fileexpo.scss";
 
-/* === OneDrive Login Config === */
+/* === OneDrive Config === */
 const msalConfig = {
   auth: {
-    clientId: "0963d086-d54d-409e-9522-caf24c4bdb78", // deine Client-ID
-    authority: "https://login.microsoftonline.com/c8a2a87d-ac4f-4812-96a8-6f6afff6016f", // dein Tenant
-    redirectUri: window.location.origin, // lokal = http://localhost:3000
+    clientId: "0963d086-d54d-409e-9522-caf24c4bdb78", // deine App-ID
+    authority: "https://login.microsoftonline.com/c8a2a87d-ac4f-4812-96a8-6f6afff6016f", // Tenant-ID
+    redirectUri: window.location.origin, // http://localhost:3000 oder deine Deploy-URL
   },
 };
 const loginRequest = { scopes: ["User.Read", "Files.Read"] };
@@ -17,26 +17,34 @@ const msalInstance = new PublicClientApplication(msalConfig);
 
 export const ExplorerOneDrive = () => {
   const wnapp = useSelector((state) => state.apps.explorer);
-  const dispatch = useDispatch();
 
+  const [ready, setReady] = useState(false);
   const [account, setAccount] = useState(null);
   const [token, setToken] = useState(null);
   const [files, setFiles] = useState([]);
   const [path, setPath] = useState([{ id: "root", name: "OneDrive" }]);
 
+  /* === Init MSAL === */
+  useEffect(() => {
+    (async () => {
+      await msalInstance.initialize();
+      setReady(true);
+    })();
+  }, []);
+
   /* === Login === */
   const handleLogin = async () => {
     try {
-      const res = await msalInstance.loginPopup(loginRequest);
-      setAccount(res.account);
+      const result = await msalInstance.loginPopup(loginRequest);
+      setAccount(result.account);
 
       const t = await msalInstance.acquireTokenSilent({
         ...loginRequest,
-        account: res.account,
+        account: result.account,
       });
       setToken(t.accessToken);
 
-      loadFiles("root", "OneDrive");
+      await loadFiles("root", "OneDrive");
     } catch (e) {
       console.error("Login error:", e);
     }
@@ -63,7 +71,7 @@ export const ExplorerOneDrive = () => {
     }
   };
 
-  /* === Doppelklick auf Item === */
+  /* === Ordner/Datei öffnen === */
   const openItem = (item) => {
     if (item.folder) {
       loadFiles(item.id, item.name);
@@ -75,7 +83,24 @@ export const ExplorerOneDrive = () => {
     }
   };
 
-  /* === UI: Login Screen === */
+  /* === UI: MSAL lädt noch === */
+  if (!ready) {
+    return (
+      <div className="msfiles floatTab dpShad">
+        <ToolBar
+          app={wnapp.action}
+          icon={wnapp.icon}
+          size={wnapp.size}
+          name="OneDrive Explorer"
+        />
+        <div className="windowScreen flex items-center justify-center">
+          <span>Lade OneDrive...</span>
+        </div>
+      </div>
+    );
+  }
+
+  /* === UI: Login === */
   if (!account) {
     return (
       <div className="msfiles floatTab dpShad login-screen">
@@ -110,6 +135,7 @@ export const ExplorerOneDrive = () => {
         size={wnapp.size}
         name="OneDrive Explorer"
       />
+
       <div className="windowScreen flex flex-col">
         {/* Breadcrumbs */}
         <div className="sec1 flex items-center">
@@ -151,7 +177,7 @@ export const ExplorerOneDrive = () => {
                 </div>
               ))}
               {files.length === 0 && (
-                <span className="text-xs mx-auto">Dieser Ordner ist leer .</span>
+                <span className="text-xs mx-auto">Dieser Ordner ist leer.</span>
               )}
             </div>
           </div>
