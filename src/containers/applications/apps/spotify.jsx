@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { initializeApp } from "firebase/app";
+import { initializeApp, getApps, getApp } from "firebase/app";
 import { getDatabase, ref, push, onValue } from "firebase/database";
 
 // --- Firebase Config ---
@@ -14,8 +14,8 @@ const firebaseConfig = {
   measurementId: "G-J2TJEP9C4C"
 };
 
-// --- Firebase Init ---
-const app = initializeApp(firebaseConfig);
+// --- Firebase Init (sicherstellen, dass es nur einmal gestartet wird) ---
+const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 const db = getDatabase(app);
 
 // --- Logging Funktion ---
