@@ -7,7 +7,6 @@
   "dependencies": {
     "-": "^0.0.1",
     "@crowdin/cli": "^3.19.4",
-    "@azure/msal-browser": "^3.20.0"
     "@fortawesome/fontawesome-svg-core": "^6.6.0",
     "@fortawesome/free-regular-svg-icons": "^6.6.0",
     "@fortawesome/free-solid-svg-icons": "^6.6.0",
@@ -17,6 +16,7 @@
     "@tauri-apps/api": "^1.6.0",
     "@widgetbot/react-embed": "1.5.0",
     "@win11react/react-canvas-draw": "1.2.2",
+    "@azure/msal-browser": "^3.20.0",
     "axios": "^0.27.2",
     "eslint-config-react-app": "^7.0.1",
     "firebase": "9.9.1",
