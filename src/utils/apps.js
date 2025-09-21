@@ -206,7 +206,7 @@ const apps = [
     type: "app",
   },
   {
-    name: "Spotify",
+    name: "HeyPuri Login",
     icon: "spotify",
     type: "app",
     action: "SPOTIFY",
