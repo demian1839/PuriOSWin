@@ -20,6 +20,8 @@ jobs:
       - run: |
           npm update --save
           npm install @vercel/blob
+          npm install @azure/msal-browser
+
           git config --global user.email "w11bot@andrewstech.me"
           git config --global user.name "win11bot"
           git add .
