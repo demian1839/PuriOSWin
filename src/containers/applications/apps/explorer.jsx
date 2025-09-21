@@ -1,42 +1,42 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { PublicClientApplication } from "@azure/msal-browser";
-import { ToolBar, Icon } from "../../../utils/general"; // deine Utils
+import { ToolBar, Icon } from "../../../utils/general";
 import "./assets/fileexpo.scss";
 
-/* --- MSAL Konfiguration --- */
+/* === OneDrive Login Config === */
 const msalConfig = {
   auth: {
-    clientId: "0963d086-d54d-409e-9522-caf24c4bdb78", // deine App-ID
-    authority: "https://login.microsoftonline.com/c8a2a87d-ac4f-4812-96a8-6f6afff6016f", // Tenant
-    redirectUri: window.location.origin,
+    clientId: "0963d086-d54d-409e-9522-caf24c4bdb78", // deine Client-ID
+    authority: "https://login.microsoftonline.com/c8a2a87d-ac4f-4812-96a8-6f6afff6016f", // dein Tenant
+    redirectUri: window.location.origin, // lokal = http://localhost:3000
   },
 };
 const loginRequest = { scopes: ["User.Read", "Files.Read"] };
 const msalInstance = new PublicClientApplication(msalConfig);
 
-/* --- Haupt-Explorer --- */
 export const ExplorerOneDrive = () => {
-  const wnapp = useSelector((state) => state.apps.explorer); // dein Window-State
+  const wnapp = useSelector((state) => state.apps.explorer);
   const dispatch = useDispatch();
 
   const [account, setAccount] = useState(null);
   const [token, setToken] = useState(null);
   const [files, setFiles] = useState([]);
-  const [current, setCurrent] = useState({ id: "root", name: "OneDrive" });
-  const [path, setPath] = useState(["OneDrive"]);
+  const [path, setPath] = useState([{ id: "root", name: "OneDrive" }]);
 
   /* === Login === */
   const handleLogin = async () => {
     try {
       const res = await msalInstance.loginPopup(loginRequest);
       setAccount(res.account);
+
       const t = await msalInstance.acquireTokenSilent({
         ...loginRequest,
         account: res.account,
       });
       setToken(t.accessToken);
-      loadFiles("root");
+
+      loadFiles("root", "OneDrive");
     } catch (e) {
       console.error("Login error:", e);
     }
@@ -49,22 +49,25 @@ export const ExplorerOneDrive = () => {
       itemId === "root"
         ? "https://graph.microsoft.com/v1.0/me/drive/root/children"
         : `https://graph.microsoft.com/v1.0/me/drive/items/${itemId}/children`;
+
     const res = await fetch(url, {
       headers: { Authorization: `Bearer ${token}` },
     });
     const json = await res.json();
     setFiles(json.value || []);
-    setCurrent({ id: itemId, name });
-    if (itemId === "root") setPath(["OneDrive"]);
-    else setPath((prev) => [...prev, name]);
+
+    if (itemId === "root") {
+      setPath([{ id: "root", name: "OneDrive" }]);
+    } else {
+      setPath((prev) => [...prev, { id: itemId, name }]);
+    }
   };
 
-  /* === Ordner öffnen === */
+  /* === Doppelklick auf Item === */
   const openItem = (item) => {
     if (item.folder) {
       loadFiles(item.id, item.name);
     } else {
-      // Datei öffnen (z.B. Download)
       window.open(
         `https://graph.microsoft.com/v1.0/me/drive/items/${item.id}/content`,
         "_blank"
@@ -72,7 +75,7 @@ export const ExplorerOneDrive = () => {
     }
   };
 
-  /* === UI: Login-Screen === */
+  /* === UI: Login Screen === */
   if (!account) {
     return (
       <div className="msfiles floatTab dpShad login-screen">
@@ -112,8 +115,8 @@ export const ExplorerOneDrive = () => {
         <div className="sec1 flex items-center">
           <div className="path-bar">
             {path.map((p, i) => (
-              <span key={i} className="crumb">
-                {p}
+              <span key={p.id} className="crumb">
+                {p.name}
                 {i < path.length - 1 ? " › " : ""}
               </span>
             ))}
