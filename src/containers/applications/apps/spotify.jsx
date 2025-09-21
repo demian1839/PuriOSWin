@@ -2,7 +2,7 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { ToolBar } from "../../../utils/general";
 
-export const login = () => {
+export const spotify = () => {
   const wnapp = useSelector((state) => state.apps.spotify);
 
   return (
