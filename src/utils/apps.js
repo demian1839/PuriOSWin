@@ -288,7 +288,7 @@ const apps = [
     payload: "https://github.com/blueedgetechno/win11React",
   },
   {
-    name: "Unescape",
+    name: "Test",
     icon: "unescape",
     type: "action",
     action: "EXTERNAL",
